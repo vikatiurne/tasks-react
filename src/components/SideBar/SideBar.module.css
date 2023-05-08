@@ -1,0 +1,13 @@
+aside ul {
+  height: 100vh;
+  overflow-y: scroll;
+  margin: 0;
+  padding: 0;
+}
+
+.aside ul li {
+  margin: 0.7em;
+}
+.time {
+  margin-bottom: 1em;
+}

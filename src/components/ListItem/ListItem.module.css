@@ -1,0 +1,27 @@
+aside ul {
+  height: 100vh;
+  overflow-y: scroll;
+  margin: 0;
+  padding: 0;
+}
+
+.aside ul li {
+  margin: 0.7em;
+}
+.time {
+  margin-bottom: 1em;
+}
+
+.wrapperTextarea p {
+  padding-top: 1em;
+  margin-bottom: 1em;
+  text-align: center;
+}
+.wrapperTextarea textarea {
+  margin: 0 1em;
+  font-size: 1.4em;
+  resize: none;
+  outline: none;
+  border: none;
+  width: 100%;
+}

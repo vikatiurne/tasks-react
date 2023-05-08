@@ -1,0 +1,16 @@
+.App{
+  max-height: 100vh;
+  height: 100%;
+}
+.active {
+  padding: 0.5em;
+  background-color: #adadad;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.taskWrapper {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}

@@ -1,0 +1,17 @@
+.button {
+    margin-right: 0.3em;
+    padding: 4px 7px 1px;
+    font-weight: 700;
+    font-size: 1em;
+    color: black;
+    border: none;
+    border-radius: 3px;
+  }
+
+  .button svg {
+    transition: transform 0.3s;
+  }
+  .button:hover svg {
+    transform: scale(1.5);
+    color: black;
+  }
