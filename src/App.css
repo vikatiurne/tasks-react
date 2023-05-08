@@ -3,10 +3,11 @@
   height: 100%;
 }
 .active {
-  padding: 0.5em;
+  padding: 0 0.5em;
   background-color: #adadad;
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
 }
 

@@ -1,9 +1,9 @@
 import { FaRegPlusSquare } from 'react-icons/fa';
 import Button from '../UI/Button/Button';
 
-const NewTask = ({ addTask }) => {
+const NewTask = ({ onclick }) => {
   return (
-    <Button onClick={addTask}>
+    <Button onClick={onclick}>
       <FaRegPlusSquare />
     </Button>
   );

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import './App.css';
 
 import ThemeProvider, { useTheme } from './ThemeContext';
@@ -7,11 +8,14 @@ import SearchBox from './components/SearchBox/SearchBox';
 import SideBar from './components/SideBar/SideBar';
 import WorkSpace from './components/WorkSpace/WorkSpace';
 import ListItem from './components/ListItem/ListItem';
+import { idb } from './components/indexedDB/idb';
+import createCollectionsInIndexDB from './components/indexedDB/idb';
 
 const db = [
   {
     id: 1,
-    title: 'some title Lorem ipsum dolor sit, amet consectetur adipisicing elit.',
+    title:
+      'some title Lorem ipsum dolor sit, amet consectetur adipisicing elit.',
     text: 'Lorem ipsum ',
     date: 'Mya 8, 2023',
     time: '12:00',
@@ -110,13 +114,91 @@ const db = [
 ];
 
 function App() {
-  const [allTasks, setAllTasks] = useState(db);
+  const [allTasks, setAllTasks] = useState([]);
+  const [clickedAdd, setClickedAdd] = useState(false);
 
-  const addTaskHandler = () => {};
+  useEffect(() => {
+    createCollectionsInIndexDB();
+    getAllTasks();
+  }, []);
+
+  const { theme } = useTheme();
+
+  const addClickHandler = () => {
+    setClickedAdd((prev) => (prev = true));
+  };
+
+  const addTaskHandler = (content) => {
+    // console.log(content);
+    let title, text;
+    if (content.includes('.')) {
+      const i = content.indexOf('.');
+      title = content.substring(0, i);
+      text = content.substring(i);
+    } else {
+      const i = content.indexOf(' ');
+      title = content.substring(0, i);
+      text = content.substring(i);
+    }
+    // console.log(`title: ${title} text:${text}`);
+
+    const dbPromise = idb.open('test-task', 1);
+    if (text) {
+      dbPromise.onsuccess = () => {
+        const db = dbPromise.result;
+
+        const transaction = db.transaction('taskData', 'readwrite');
+        const taskData = transaction.objectStore('taskData');
+
+        const newTask = taskData.put({
+          id: uuidv4(),
+          text,
+          title,
+          date: new Date().toLocaleString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+          }),
+          time: new Date().toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+        });
+
+        newTask.onsuccess = () => {
+          transaction.oncomplete = () => {
+            db.close();
+          };
+          console.log('Нотатка додана до бази даних');
+        };
+        newTask.onerror = (err) => console.log(err);
+      };
+    }
+  };
+
+  const getAllTasks = () => {
+    const dbPromise = idb.open('test-task', 1);
+
+    dbPromise.onsuccess = () => {
+      const db = dbPromise.result;
+      const transaction = db.transaction('taskData', 'readonly');
+      const taskData = transaction.objectStore('taskData');
+      const tasks = taskData.getAll();
+
+      tasks.onsuccess = (e) => {
+        setAllTasks(e.target.result);
+      };
+      tasks.onerror = (err) => console.log(err);
+
+      transaction.oncomplete = () => {
+        db.close();
+      };
+    };
+  };
+
   const deleteTaskHandler = () => {};
   const editTaskHandler = () => {};
 
-  const { theme } = useTheme();
   return (
     <div
       className="App"
@@ -124,7 +206,7 @@ function App() {
     >
       <div className="active">
         <div className="control">
-          <NewTask addTask={addTaskHandler} />
+          <NewTask onclick={addClickHandler} />
           <WorkSpace
             deleteTask={deleteTaskHandler}
             editTask={editTaskHandler}
@@ -132,9 +214,9 @@ function App() {
         </div>
         <SearchBox />
       </div>
-      <div className='taskWrapper'>
+      <div className="taskWrapper">
         <SideBar allTasks={allTasks} />
-        <ListItem sidebar={false}/>
+        <ListItem sidebar={false} addTask={addTaskHandler} clickedAdd={clickedAdd}/>
       </div>
     </div>
   );
