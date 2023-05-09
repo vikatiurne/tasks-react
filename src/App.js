@@ -1,135 +1,53 @@
 import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+
 import './App.css';
 
-import ThemeProvider, { useTheme } from './ThemeContext';
 import NewTask from './components/NewTask/NewTask';
 import SearchBox from './components/SearchBox/SearchBox';
 import SideBar from './components/SideBar/SideBar';
 import WorkSpace from './components/WorkSpace/WorkSpace';
-import ListItem from './components/ListItem/ListItem';
 import { idb } from './components/indexedDB/idb';
 import createCollectionsInIndexDB from './components/indexedDB/idb';
+import CreateTask from './components/CreateTask/CreateTask';
+import SingleTask from './components/SinsleTask/SingleTask';
 
-const db = [
-  {
-    id: 1,
-    title:
-      'some title Lorem ipsum dolor sit, amet consectetur adipisicing elit.',
-    text: 'Lorem ipsum ',
-    date: 'Mya 8, 2023',
-    time: '12:00',
-  },
-  {
-    id: 2,
-    title: 'some title2',
-    text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Incidunt ipsam a modi odio! Quo ipsa quos, maiores sint laboriosam tempora officiis? Accusantium voluptas dolore libero inventore voluptatem? Molestiae, delectus odit!',
-    date: 'Mya 6, 2023',
-    time: '11:00',
-  },
-  {
-    id: 3,
-    title: 'some title3',
-    text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Incidunt ipsam a modi odio! Quo ipsa quos, maiores sint laboriosam tempora officiis? Accusantium voluptas dolore libero inventore voluptatem? Molestiae, delectus odit!',
-    date: 'Mya 7, 2023',
-    time: '19:00',
-  },
-  {
-    id: 4,
-    title: 'some title4',
-    text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Incidunt ipsam a modi odio! Quo ipsa quos, maiores sint laboriosam tempora officiis? Accusantium voluptas dolore libero inventore voluptatem? Molestiae, delectus odit!',
-    date: 'Mya 5, 2023',
-    time: '22:00',
-  },
-  {
-    id: 5,
-    title: 'some title4',
-    text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Incidunt ipsam a modi odio! Quo ipsa quos, maiores sint laboriosam tempora officiis? Accusantium voluptas dolore libero inventore voluptatem? Molestiae, delectus odit!',
-    date: 'Mya 5, 2023',
-    time: '22:00',
-  },
-  {
-    id: 6,
-    title: 'some title4',
-    text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Incidunt ipsam a modi odio! Quo ipsa quos, maiores sint laboriosam tempora officiis? Accusantium voluptas dolore libero inventore voluptatem? Molestiae, delectus odit!',
-    date: 'Mya 5, 2023',
-    time: '22:00',
-  },
-  {
-    id: 7,
-    title: 'some title4',
-    text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Incidunt ipsam a modi odio! Quo ipsa quos, maiores sint laboriosam tempora officiis? Accusantium voluptas dolore libero inventore voluptatem? Molestiae, delectus odit!',
-    date: 'Mya 5, 2023',
-    time: '22:00',
-  },
-  {
-    id: 8,
-    title: 'some title4',
-    text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Incidunt ipsam a modi odio! Quo ipsa quos, maiores sint laboriosam tempora officiis? Accusantium voluptas dolore libero inventore voluptatem? Molestiae, delectus odit!',
-    date: 'Mya 5, 2023',
-    time: '22:00',
-  },
-  {
-    id: 9,
-    title: 'some title4',
-    text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Incidunt ipsam a modi odio! Quo ipsa quos, maiores sint laboriosam tempora officiis? Accusantium voluptas dolore libero inventore voluptatem? Molestiae, delectus odit!',
-    date: 'Mya 5, 2023',
-    time: '22:00',
-  },
-  {
-    id: 10,
-    title: 'some title4',
-    text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Incidunt ipsam a modi odio! Quo ipsa quos, maiores sint laboriosam tempora officiis? Accusantium voluptas dolore libero inventore voluptatem? Molestiae, delectus odit!',
-    date: 'Mya 5, 2023',
-    time: '22:00',
-  },
-  {
-    id: 11,
-    title: 'some title4',
-    text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Incidunt ipsam a modi odio! Quo ipsa quos, maiores sint laboriosam tempora officiis? Accusantium voluptas dolore libero inventore voluptatem? Molestiae, delectus odit!',
-    date: 'Mya 5, 2023',
-    time: '22:00',
-  },
-  {
-    id: 12,
-    title: 'some title4',
-    text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Incidunt ipsam a modi odio! Quo ipsa quos, maiores sint laboriosam tempora officiis? Accusantium voluptas dolore libero inventore voluptatem? Molestiae, delectus odit!',
-    date: 'Mya 5, 2023',
-    time: '22:00',
-  },
-  {
-    id: 13,
-    title: 'some title4',
-    text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Incidunt ipsam a modi odio! Quo ipsa quos, maiores sint laboriosam tempora officiis? Accusantium voluptas dolore libero inventore voluptatem? Molestiae, delectus odit!',
-    date: 'Mya 5, 2023',
-    time: '22:00',
-  },
-  {
-    id: 14,
-    title: 'some title4',
-    text: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Incidunt ipsam a modi odio! Quo ipsa quos, maiores sint laboriosam tempora officiis? Accusantium voluptas dolore libero inventore voluptatem? Molestiae, delectus odit!',
-    date: 'Mya 5, 2023',
-    time: '22:00',
-  },
-];
 
 function App() {
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
   const [allTasks, setAllTasks] = useState([]);
   const [clickedAdd, setClickedAdd] = useState(false);
+  const [disabled, setDisabled] = useState('disabled');
+  const [isShowSingleTask, setIsShowSingleTask] = useState(false);
+  const [activeTaskId, setActiveTaskId] = useState(null);
 
   useEffect(() => {
     createCollectionsInIndexDB();
     getAllTasks();
   }, []);
 
-  const { theme } = useTheme();
-
   const addClickHandler = () => {
     setClickedAdd((prev) => (prev = true));
+    setDate(
+      new Date().toLocaleString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    );
+    console.log(date);
+    setTime(
+      new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    );
+    console.log(time);
   };
 
-  const addTaskHandler = (content) => {
-    // console.log(content);
+  const addTaskHandler = (content, isFocus) => {
+    setClickedAdd((prev) => (prev = isFocus));
     let title, text;
     if (content.includes('.')) {
       const i = content.indexOf('.');
@@ -140,7 +58,6 @@ function App() {
       title = content.substring(0, i);
       text = content.substring(i);
     }
-    // console.log(`title: ${title} text:${text}`);
 
     const dbPromise = idb.open('test-task', 1);
     if (text) {
@@ -154,21 +71,16 @@ function App() {
           id: uuidv4(),
           text,
           title,
-          date: new Date().toLocaleString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-          }),
-          time: new Date().toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-          }),
+          date,
+          time,
+          isActive: false,
         });
 
         newTask.onsuccess = () => {
           transaction.oncomplete = () => {
             db.close();
           };
+          getAllTasks();
           console.log('Нотатка додана до бази даних');
         };
         newTask.onerror = (err) => console.log(err);
@@ -196,36 +108,58 @@ function App() {
     };
   };
 
+  const clickTackHandler = (id) => {
+    setAllTasks(
+      allTasks.map((task) => 
+        task.id === id
+          ? { ...task, isActive: !task.isActive }
+          : { ...task, isActive: false }
+      )
+    );
+    setIsShowSingleTask(true);
+    setActiveTaskId(id);
+    setDisabled(null);
+  };
+
   const deleteTaskHandler = () => {};
   const editTaskHandler = () => {};
 
   return (
-    <div
-      className="App"
-      style={{ background: theme === 'light' ? 'white' : 'black' }}
-    >
+    <div className="App">
       <div className="active">
         <div className="control">
           <NewTask onclick={addClickHandler} />
           <WorkSpace
             deleteTask={deleteTaskHandler}
             editTask={editTaskHandler}
+            disabled={disabled}
           />
         </div>
         <SearchBox />
       </div>
       <div className="taskWrapper">
-        <SideBar allTasks={allTasks} />
-        <ListItem sidebar={false} addTask={addTaskHandler} clickedAdd={clickedAdd}/>
+        <SideBar
+          allTasks={allTasks}
+          addTask={addTaskHandler}
+          clickedAdd={clickedAdd}
+          clickTackHandler={clickTackHandler}
+          isShowSingleTask={isShowSingleTask}
+        />
+        {clickedAdd && (
+          <CreateTask
+            date={date}
+            time={time}
+            addTask={addTaskHandler}
+            clickedAdd={clickedAdd}
+          />
+        )}
+        {isShowSingleTask && <SingleTask tasks={allTasks} id={activeTaskId} />}
       </div>
     </div>
   );
 }
+
 function Root() {
-  return (
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
-  );
+  return <App />;
 }
 export default Root;

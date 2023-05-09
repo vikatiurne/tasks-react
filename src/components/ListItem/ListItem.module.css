@@ -12,16 +12,7 @@ aside ul {
   margin-bottom: 1em;
 }
 
-.wrapperTextarea p {
-  padding-top: 1em;
-  margin-bottom: 1em;
-  text-align: center;
+.active{
+  background-color: #cfcfcf;
 }
-.wrapperTextarea textarea {
-  margin: 0 1em;
-  font-size: 1.4em;
-  resize: none;
-  outline: none;
-  border: none;
-  width: 100%;
-}
+

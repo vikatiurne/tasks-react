@@ -1,4 +1,4 @@
-.App{
+.App {
   max-height: 100vh;
   height: 100%;
 }
@@ -14,4 +14,10 @@
 .taskWrapper {
   display: grid;
   grid-template-columns: 1fr 2fr;
+}
+@media (max-width: 520px) {
+  .taskWrapper {
+    grid-template-columns: 1fr;
+    grid-column: 2 / span 2;
+  }
 }

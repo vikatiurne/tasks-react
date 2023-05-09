@@ -1,23 +1,11 @@
-import React, { useRef, useState } from 'react';
-
 import styles from './ListItem.module.css';
 
-const ListItem = ({ task, sidebar, addTask, clickedAdd }) => {
-  console.log(addTask);
-  const [userText, setUserText] = useState('');
-  const textarea = useRef();
-
-  const onChangeHandler = (e) => {
-    setUserText(e.target.value);
-  };
-
-  const onBlurHandler = () => {
-    const text = textarea.current.value;
-    if (userText.length) addTask(text);
-  };
-
+const ListItem = ({ task, clickTackHandler }) => {
   const renderTaskInSideBar = (
-    <li>
+    <li
+      onClick={() => clickTackHandler(task.id)}
+      className={task.isActive ? styles.active : null}
+    >
       <p>
         <b>
           {task?.title.length > 20
@@ -34,30 +22,7 @@ const ListItem = ({ task, sidebar, addTask, clickedAdd }) => {
     </li>
   );
 
-  const renderTaskInSingleTask = (
-    <div className={styles.wrapperTextarea}>
-      <p>{`${task?.date} at ${task?.time}`}</p>
-      <div>
-        <textarea
-          ref={textarea}
-          onBlur={onBlurHandler}
-          onChange={onChangeHandler}
-          value={userText}
-          name="usertext"
-        />
-      </div>
-    </div>
-  );
-
-  return (
-    <>
-      {sidebar
-        ? renderTaskInSideBar
-        : clickedAdd
-        ? renderTaskInSingleTask
-        : null}
-    </>
-  );
+  return <>{renderTaskInSideBar}</>;
 };
 
 export default ListItem;
