@@ -24,12 +24,11 @@ const CreateTask = ({ addTask, date, time }) => {
           onBlur={onBlurHandler}
           onChange={onChangeHandler}
           value={userText}
-          name="usertext"
+          name="userupdatedtext"
         />
       </div>
     </div>
   );
-  //   console.log(activeTask);
   return <div>{renderTaskInSingleTask}</div>;
 };
 

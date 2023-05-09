@@ -2,6 +2,7 @@ import { FaRegTrashAlt, FaRegEdit } from 'react-icons/fa';
 import Button from '../UI/Button/Button';
 
 const WorkSpace = ({ deleteTask, editTask, disabled }) => {
+
   return (
     <>
       <Button onClick={deleteTask} disabled={disabled}>
