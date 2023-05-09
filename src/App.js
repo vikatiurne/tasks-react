@@ -12,7 +12,6 @@ import createCollectionsInIndexDB from './components/indexedDB/idb';
 import CreateTask from './components/CreateTask/CreateTask';
 import SingleTask from './components/SinsleTask/SingleTask';
 
-
 function App() {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
@@ -110,7 +109,7 @@ function App() {
 
   const clickTackHandler = (id) => {
     setAllTasks(
-      allTasks.map((task) => 
+      allTasks.map((task) =>
         task.id === id
           ? { ...task, isActive: !task.isActive }
           : { ...task, isActive: false }
@@ -121,6 +120,20 @@ function App() {
     setDisabled(null);
   };
 
+  const searchTaskHandler = (searchText) => {
+    console.log(searchText)
+    if (!searchText) {
+      setAllTasks(allTasks);
+    }
+    const searchTasks =allTasks.filter((task) => {
+      return (
+        task.text.toLowerCase().includes(searchText.toLowerCase()) ||
+        task.title.toLowerCase().includes(searchText.toLowerCase())
+      );
+    });
+    setAllTasks(searchTasks);
+  
+  };
   const deleteTaskHandler = () => {};
   const editTaskHandler = () => {};
 
@@ -135,7 +148,7 @@ function App() {
             disabled={disabled}
           />
         </div>
-        <SearchBox />
+        <SearchBox search={searchTaskHandler} />
       </div>
       <div className="taskWrapper">
         <SideBar
