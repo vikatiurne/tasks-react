@@ -4,12 +4,13 @@
     text-align: center;
   }
   .wrapperTextarea textarea {
-    margin: 0 1em;
+    padding: 0 1em;
     font-size: 1.4em;
     resize: none;
     outline: none;
     border: none;
     width: 100%;
+    height: 100vh;
   }
   @media (max-width: 520px) {
     .wrapperTextarea {

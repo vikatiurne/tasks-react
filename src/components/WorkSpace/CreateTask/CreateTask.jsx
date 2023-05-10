@@ -1,9 +1,27 @@
-import React, { useRef, useState } from 'react';
-import styles from './Create.module.css'
+import React, { useEffect, useRef, useState } from 'react';
+import styles from './Create.module.css';
 
-const CreateTask = ({ addTask, date, time }) => {
+const CreateTask = ({ addTask }) => {
   const textarea = useRef();
   const [userText, setUserText] = useState('');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
+
+  useEffect(() => {
+    setDate(
+      new Date().toLocaleString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    );
+    setTime(
+      new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    );
+  }, []);
 
   const onChangeHandler = (e) => {
     setUserText(e.target.value);
@@ -11,7 +29,7 @@ const CreateTask = ({ addTask, date, time }) => {
 
   const onBlurHandler = () => {
     const text = textarea.current.value;
-    if (text.length) addTask(text, false);
+    if (text.length) addTask(text, false, date, time);
     setUserText('');
   };
 

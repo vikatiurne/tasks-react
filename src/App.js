@@ -3,26 +3,25 @@ import { v4 as uuidv4 } from 'uuid';
 
 import './App.css';
 
+import { idb } from './components/indexedDB/idb';
+import createCollectionsInIndexDB from './components/indexedDB/idb';
+
 import NewTask from './components/NewTask/NewTask';
+import ControlSpace from './components/ControlSpace/ControlSpace';
 import SearchBox from './components/SearchBox/SearchBox';
 import SideBar from './components/SideBar/SideBar';
 import WorkSpace from './components/WorkSpace/WorkSpace';
-import { idb } from './components/indexedDB/idb';
-import createCollectionsInIndexDB from './components/indexedDB/idb';
-import CreateTask from './components/CreateTask/CreateTask';
-import SingleTask from './components/SinsleTask/SingleTask';
-import EditPage from './components/EditPage/EditPage';
 
 function App() {
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
   const [allTasks, setAllTasks] = useState([]);
   const [clickedAdd, setClickedAdd] = useState(false);
   const [clickedEdit, setClickedEdit] = useState(false);
+  const [clickedDelete, setClickedDelete] = useState(false);
+  const [clickedSearch, setClickedSearch] = useState(false);
+
   const [disabled, setDisabled] = useState('disabled');
   const [isShowSingleTask, setIsShowSingleTask] = useState(false);
   const [activeTaskId, setActiveTaskId] = useState(null);
-  const [activeTask, setActiveTask] = useState({});
 
   useEffect(() => {
     createCollectionsInIndexDB();
@@ -30,25 +29,12 @@ function App() {
   }, []);
 
   const addClickHandler = () => {
-    setClickedAdd((prev) => (prev = true));
-    setDate(
-      new Date().toLocaleString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-      })
-    );
-    setTime(
-      new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      })
-    );
+    setClickedAdd(true);
+    setIsShowSingleTask(false);
   };
 
-  const addTaskHandler = (content, isFocus) => {
-    console.log(content);
-    setClickedAdd((prev) => (prev = isFocus));
+  const addTaskHandler = (content, isFocus, date, time) => {
+    setClickedAdd(isFocus);
     let title, text;
     if (content.includes('.')) {
       const i = content.indexOf('.');
@@ -80,8 +66,8 @@ function App() {
         newTask.onsuccess = () => {
           transaction.oncomplete = () => {
             db.close();
+            getAllTasks();
           };
-          getAllTasks();
           console.log('Нотатка додана до бази даних');
         };
         newTask.onerror = (err) => console.log(err);
@@ -118,15 +104,27 @@ function App() {
       )
     );
     setIsShowSingleTask(true);
-    setClickedEdit((prev) => (prev = false));
+    setClickedEdit(false);
     setActiveTaskId(id);
     setDisabled(null);
+    setClickedDelete(false);
+    setClickedSearch(false);
   };
 
   const searchTaskHandler = (searchText) => {
-    if (!searchText) {
+    setClickedSearch(true);
+    if (!!activeTaskId) {
+      setAllTasks(
+        allTasks.map((task) =>
+          task.id === activeTaskId
+            ? { ...task, isActive: false }
+            : { ...task, isActive: false }
+        )
+      );
+    } else {
       setAllTasks(allTasks);
     }
+
     const searchTasks = allTasks.filter((task) => {
       return (
         task.text.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -135,7 +133,41 @@ function App() {
     });
     setAllTasks(searchTasks);
   };
-  const deleteTaskHandler = () => {};
+
+  const deleteTaskHandler = (id) => {
+    setClickedDelete(true);
+
+    const dbPromise = idb.open('test-task', 1);
+
+    dbPromise.onsuccess = () => {
+      const db = dbPromise.result;
+      const transaction = db.transaction('taskData', 'readwrite');
+      const taskData = transaction.objectStore('taskData');
+      const deletedTask = taskData.delete(id);
+
+      if (window.confirm('Видалити нотатку без можливості ії відновлення?')) {
+        deletedTask.onsuccess = () => {
+          getAllTasks();
+          console.log('Нотатка видалена');
+        };
+        deletedTask.onerror = (err) => console.log(err);
+
+        transaction.oncomplete = () => {
+          db.close();
+        };
+        setDisabled('disabled');
+      } else {
+        setDisabled('disabled');
+        setAllTasks(
+          allTasks.map((task) =>
+            task.id === activeTaskId
+              ? { ...task, isActive: false }
+              : { ...task, isActive: false }
+          )
+        );
+      }
+    };
+  };
 
   const editTaskHandler = (content, id, isFocus, disabled) => {
     let title, text;
@@ -189,10 +221,8 @@ function App() {
   };
 
   const editClickHandler = () => {
-    const currentTask = allTasks.filter((task) => task.id === activeTaskId);
-    setActiveTask(currentTask);
-    setClickedEdit((prev) => (prev = true));
-    setIsShowSingleTask((prev) => (prev = false));
+    setClickedEdit(true);
+    setIsShowSingleTask(false);
   };
 
   return (
@@ -200,8 +230,7 @@ function App() {
       <div className="active">
         <div className="control">
           <NewTask onclick={addClickHandler} />
-          <WorkSpace
-            tasks={allTasks}
+          <ControlSpace
             id={activeTaskId}
             deleteTask={deleteTaskHandler}
             editTask={editClickHandler}
@@ -216,29 +245,17 @@ function App() {
           addTask={addTaskHandler}
           clickedAdd={clickedAdd}
           clickTackHandler={clickTackHandler}
-          isShowSingleTask={isShowSingleTask}
         />
-        {clickedAdd && (
-          <CreateTask
-            date={date}
-            time={time}
+        {(!clickedDelete || clickedAdd) && (
+          <WorkSpace
             addTask={addTaskHandler}
             clickedAdd={clickedAdd}
-          />
-        )}
-        {isShowSingleTask && (
-          <SingleTask
-            tasks={allTasks}
-            id={activeTaskId}
             clickedEdit={clickedEdit}
-            currentTask={activeTask}
-          />
-        )}
-        {clickedEdit && (
-          <EditPage
-            id={activeTaskId}
-            editTask={editTaskHandler}
+            clickedSearch={clickedSearch}
             tasks={allTasks}
+            id={activeTaskId}
+            isShowSingleTask={isShowSingleTask}
+            editTask={editTaskHandler}
           />
         )}
       </div>
