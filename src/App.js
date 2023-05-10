@@ -53,7 +53,7 @@ function App() {
     }
   };
 
-  const addTaskHandler = (content, date, time) => {
+  const addTaskHandler = (content, date) => {
     setClickedAdd(false);
     setDisabledAdd(null);
     let title, text;
@@ -80,7 +80,6 @@ function App() {
           text,
           title,
           date,
-          time,
           isActive: false,
         });
 
@@ -128,11 +127,12 @@ function App() {
     setClickedEdit(false);
     setActiveTaskId(id);
     setDisabled(null);
+    setDisabledAdd(null);
     setClickedDelete(false);
     setClickedSearch(false);
   };
 
-  const searchTaskHandler = (searchText) => {
+  const searchTaskHandler = () => {
     setClickedSearch(true);
     if (!!activeTaskId) {
       setAllTasks(
@@ -184,6 +184,8 @@ function App() {
   };
 
   const editTaskHandler = (content, id, isFocus) => {
+    setDisabled('disabled');
+    setDisabledAdd(null)
     let title, text;
     if (content) {
       if (content.includes('.')) {
@@ -209,15 +211,7 @@ function App() {
           id,
           text,
           title,
-          date: new Date().toLocaleString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-          }),
-          time: new Date().toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-          }),
+          date: Date.now(),
           isActive: false,
         });
 
@@ -231,8 +225,7 @@ function App() {
         updatedTask.onerror = (err) => console.log(err);
       };
     }
-    setDisabled('disabled');
-    setDisabledAdd(null)
+  
   };
 
   const editClickHandler = () => {

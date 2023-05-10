@@ -3,6 +3,7 @@ aside ul {
   overflow-y: scroll;
   margin: 0;
   padding: 0;
+  border-top: 1px ridge #adadad;
 }
 
 .aside ul li {

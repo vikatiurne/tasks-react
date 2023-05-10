@@ -16,17 +16,14 @@ const EditPage = ({ tasks, id, editTask }) => {
 
   return (
     <div className={styles.wrapperTextarea}>
-      {/* <p>{`${activeTask[0].date} at ${activeTask[0].time}`}</p> */}
-      <div>
-        <textarea
-          ref={textarea}
-          value={updatedTask}
-          onBlur={onBlurHandler}
-          onChange={(e) => {
-            setUpdatedTask(e.target.value);
-          }}
-        />
-      </div>
+      <textarea
+        ref={textarea}
+        value={updatedTask}
+        onBlur={onBlurHandler}
+        onChange={(e) => {
+          setUpdatedTask(e.target.value);
+        }}
+      />
     </div>
   );
 };

@@ -12,7 +12,11 @@ aside ul {
   margin-bottom: 1em;
 }
 
-.active{
-  background-color: #cfcfcf;
+.time span {
+  font-size: 0.9em;
+  font-style: italic;
 }
 
+.active {
+  background-color: #cfcfcf;
+}

@@ -7,10 +7,21 @@ const SingleTask = ({ tasks, id, isShowSingleTask }) => {
   const [time, setTime] = useState('');
 
   const activeTask = tasks.filter((task) => task.id === id);
-
+  console.log(activeTask[0].date);
   useEffect(() => {
-    setDate(activeTask[0].date);
-    setTime(activeTask[0].time);
+    setDate(
+      Intl.DateTimeFormat('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      }).format(activeTask[0].date)
+    );
+    setTime(
+      Intl.DateTimeFormat('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }).format(activeTask[0].date)
+    );
     setTask(activeTask[0].title + activeTask[0].text);
   }, [isShowSingleTask, activeTask]);
 

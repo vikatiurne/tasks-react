@@ -5,22 +5,11 @@ const CreateTask = ({ addTask }) => {
   const textarea = useRef();
   const [userText, setUserText] = useState('');
   const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
+  // const [time, setTime] = useState('');
 
   useEffect(() => {
-    setDate(
-      new Date().toLocaleString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-      })
-    );
-    setTime(
-      new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      })
-    );
+    setDate(Date.now());
+    // setTime(Date.now());
   }, []);
 
   const onChangeHandler = (e) => {
@@ -29,22 +18,19 @@ const CreateTask = ({ addTask }) => {
 
   const onBlurHandler = () => {
     const text = textarea.current.value;
-    if (text.length) addTask(text, date, time);
+    if (text.length) addTask(text, date);
     setUserText('');
   };
 
   const renderTaskInSingleTask = (
     <>
-      {/* <p>{`${date} at ${time}`}</p> */}
-      <div>
-        <textarea
-          ref={textarea}
-          onBlur={onBlurHandler}
-          onChange={onChangeHandler}
-          value={userText}
-          name="userupdatedtext"
-        />
-      </div>
+      <textarea
+        ref={textarea}
+        onBlur={onBlurHandler}
+        onChange={onChangeHandler}
+        value={userText}
+        name="userupdatedtext"
+      />
     </>
   );
   return <div className={styles.wrapperTextarea}>{renderTaskInSingleTask}</div>;

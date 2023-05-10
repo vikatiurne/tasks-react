@@ -15,7 +15,7 @@ const WorkSpace = (props) => {
   } = props;
   return (
     <>
-      {clickedAdd && <CreateTask addTask={addTask} />}
+      {(clickedAdd && !isShowSingleTask) &&<CreateTask addTask={addTask} />}
       {clickedEdit && <EditPage tasks={tasks} id={id} editTask={editTask} />}
       {isShowSingleTask && !clickedSearch && (
         <SingleTask tasks={tasks} id={id} />
