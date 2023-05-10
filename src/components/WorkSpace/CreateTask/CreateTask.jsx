@@ -29,13 +29,13 @@ const CreateTask = ({ addTask }) => {
 
   const onBlurHandler = () => {
     const text = textarea.current.value;
-    if (text.length) addTask(text, false, date, time);
+    if (text.length) addTask(text, date, time);
     setUserText('');
   };
 
   const renderTaskInSingleTask = (
-    <div className={styles.wrapperTextarea}>
-      <p>{`${date} at ${time}`}</p>
+    <>
+      {/* <p>{`${date} at ${time}`}</p> */}
       <div>
         <textarea
           ref={textarea}
@@ -45,9 +45,9 @@ const CreateTask = ({ addTask }) => {
           name="userupdatedtext"
         />
       </div>
-    </div>
+    </>
   );
-  return <div>{renderTaskInSingleTask}</div>;
+  return <div className={styles.wrapperTextarea}>{renderTaskInSingleTask}</div>;
 };
 
 export default CreateTask;

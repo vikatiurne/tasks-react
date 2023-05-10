@@ -10,13 +10,13 @@ const EditPage = ({ tasks, id, editTask }) => {
 
   const onBlurHandler = () => {
     const text = textarea.current.value;
-    if (text.length) editTask(text, id, true, 'disabled');
+    if (text.length) editTask(text, id, true);
     setUpdatedTask('');
   };
 
   return (
     <div className={styles.wrapperTextarea}>
-      <p>{`${activeTask[0].date} at ${activeTask[0].time}`}</p>
+      {/* <p>{`${activeTask[0].date} at ${activeTask[0].time}`}</p> */}
       <div>
         <textarea
           ref={textarea}

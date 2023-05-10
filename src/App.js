@@ -8,7 +8,6 @@ import createCollectionsInIndexDB from './components/indexedDB/idb';
 
 import NewTask from './components/NewTask/NewTask';
 import ControlSpace from './components/ControlSpace/ControlSpace';
-import SearchBox from './components/SearchBox/SearchBox';
 import SideBar from './components/SideBar/SideBar';
 import WorkSpace from './components/WorkSpace/WorkSpace';
 
@@ -18,8 +17,9 @@ function App() {
   const [clickedEdit, setClickedEdit] = useState(false);
   const [clickedDelete, setClickedDelete] = useState(false);
   const [clickedSearch, setClickedSearch] = useState(false);
-
+  const [searchText, setSearchText] = useState('');
   const [disabled, setDisabled] = useState('disabled');
+  const [disabledAdd, setDisabledAdd] = useState(null);
   const [isShowSingleTask, setIsShowSingleTask] = useState(false);
   const [activeTaskId, setActiveTaskId] = useState(null);
 
@@ -28,13 +28,34 @@ function App() {
     getAllTasks();
   }, []);
 
+  const searchTasks = allTasks.filter((task) => {
+    return (
+      task.text.toLowerCase().includes(searchText.toLowerCase()) ||
+      task.title.toLowerCase().includes(searchText.toLowerCase())
+    );
+  });
+
   const addClickHandler = () => {
     setClickedAdd(true);
     setIsShowSingleTask(false);
+    setDisabledAdd('disabled');
+    setDisabled('disabled');
+    if (!!activeTaskId) {
+      setAllTasks(
+        allTasks.map((task) =>
+          task.id === activeTaskId
+            ? { ...task, isActive: false }
+            : { ...task, isActive: false }
+        )
+      );
+    } else {
+      setAllTasks(allTasks);
+    }
   };
 
-  const addTaskHandler = (content, isFocus, date, time) => {
-    setClickedAdd(isFocus);
+  const addTaskHandler = (content, date, time) => {
+    setClickedAdd(false);
+    setDisabledAdd(null);
     let title, text;
     if (content.includes('.')) {
       const i = content.indexOf('.');
@@ -124,14 +145,7 @@ function App() {
     } else {
       setAllTasks(allTasks);
     }
-
-    const searchTasks = allTasks.filter((task) => {
-      return (
-        task.text.toLowerCase().includes(searchText.toLowerCase()) ||
-        task.title.toLowerCase().includes(searchText.toLowerCase())
-      );
-    });
-    setAllTasks(searchTasks);
+    setDisabled('disabled');
   };
 
   const deleteTaskHandler = (id) => {
@@ -169,7 +183,7 @@ function App() {
     };
   };
 
-  const editTaskHandler = (content, id, isFocus, disabled) => {
+  const editTaskHandler = (content, id, isFocus) => {
     let title, text;
     if (content) {
       if (content.includes('.')) {
@@ -217,19 +231,22 @@ function App() {
         updatedTask.onerror = (err) => console.log(err);
       };
     }
-    setDisabled(disabled);
+    setDisabled('disabled');
+    setDisabledAdd(null)
   };
 
   const editClickHandler = () => {
     setClickedEdit(true);
     setIsShowSingleTask(false);
+    setDisabled('disabled');
+    setDisabledAdd('disabled');
   };
 
   return (
     <div className="App">
       <div className="active">
         <div className="control">
-          <NewTask onclick={addClickHandler} />
+          <NewTask onclick={addClickHandler} disabled={disabledAdd} />
           <ControlSpace
             id={activeTaskId}
             deleteTask={deleteTaskHandler}
@@ -237,11 +254,20 @@ function App() {
             disabled={disabled}
           />
         </div>
-        <SearchBox search={searchTaskHandler} />
+        <div>
+          <input
+            className="search"
+            type="search"
+            placeholder="&#128269; search"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onFocus={searchTaskHandler}
+          />
+        </div>
       </div>
       <div className="taskWrapper">
         <SideBar
-          allTasks={allTasks}
+          allTasks={searchTasks}
           addTask={addTaskHandler}
           clickedAdd={clickedAdd}
           clickTackHandler={clickTackHandler}
