@@ -7,7 +7,7 @@ const WorkSpace = (props) => {
   return (
     <>
       {clickedAdd && !isShowSingleTask && <CreateTask />}
-      {clickedEdit && <EditPage />}
+      {clickedEdit && !clickedAdd && <EditPage />}
       {isShowSingleTask && !clickedSearch && <SingleTask />}
     </>
   );

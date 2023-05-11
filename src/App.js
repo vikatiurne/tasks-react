@@ -257,6 +257,7 @@ function App() {
         <TasksContext.Provider value={{ clickTackHandler }}>
           <SideBar searchText={searchText} allTasks={allTasks} />
         </TasksContext.Provider>
+
         {(!clickedDelete || clickedAdd) && (
           <TasksContext.Provider
             value={{
