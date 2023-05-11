@@ -1,11 +1,15 @@
+import { useContext } from 'react';
 import styles from './Button.module.css';
+import TasksContext from '../../../context/TasksContext';
 
 const Button = (props) => {
-  const { children} = props;
+  const { disabled } = useContext(TasksContext);
+  const { children } = props;
   return (
     <button
       {...props}
       className={styles.button}
+      disabled={disabled}
       children={children}
     />
   );

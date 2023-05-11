@@ -1,15 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import styles from './Create.module.css';
+import TasksContext from '../../../context/TasksContext';
 
-const CreateTask = ({ addTask }) => {
+const CreateTask = () => {
   const textarea = useRef();
   const [userText, setUserText] = useState('');
   const [date, setDate] = useState('');
-  // const [time, setTime] = useState('');
+  const { addTask } = useContext(TasksContext);
 
   useEffect(() => {
     setDate(Date.now());
-    // setTime(Date.now());
   }, []);
 
   const onChangeHandler = (e) => {
@@ -26,6 +26,7 @@ const CreateTask = ({ addTask }) => {
     <>
       <textarea
         ref={textarea}
+        autoFocus
         onBlur={onBlurHandler}
         onChange={onChangeHandler}
         value={userText}

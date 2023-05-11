@@ -3,23 +3,12 @@ import EditPage from './EditPage/EditPage';
 import SingleTask from './SinsleTask/SingleTask';
 
 const WorkSpace = (props) => {
-  const {
-    addTask,
-    clickedAdd,
-    tasks,
-    id,
-    clickedEdit,
-    clickedSearch,
-    isShowSingleTask,
-    editTask,
-  } = props;
+  const { clickedAdd, clickedEdit, clickedSearch, isShowSingleTask } = props;
   return (
     <>
-      {(clickedAdd && !isShowSingleTask) &&<CreateTask addTask={addTask} />}
-      {clickedEdit && <EditPage tasks={tasks} id={id} editTask={editTask} />}
-      {isShowSingleTask && !clickedSearch && (
-        <SingleTask tasks={tasks} id={id} />
-      )}
+      {clickedAdd && !isShowSingleTask && <CreateTask />}
+      {clickedEdit && <EditPage />}
+      {isShowSingleTask && !clickedSearch && <SingleTask />}
     </>
   );
 };

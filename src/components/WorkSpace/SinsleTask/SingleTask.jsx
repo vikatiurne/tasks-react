@@ -1,18 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styles from './SingleTask.module.css';
+import TasksContext from '../../../context/TasksContext';
 
-const SingleTask = ({ tasks, id, isShowSingleTask }) => {
+const SingleTask = () => {
   const [task, setTask] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const { tasks, id } = useContext(TasksContext);
 
   const activeTask = tasks.filter((task) => task.id === id);
-  console.log(activeTask[0].date);
+
   useEffect(() => {
     setDate(
-      Intl.DateTimeFormat('en-US', {
-        month: 'long',
+      Intl.DateTimeFormat('ua', {
         day: 'numeric',
+        month: 'long',
         year: 'numeric',
       }).format(activeTask[0].date)
     );
@@ -23,7 +25,7 @@ const SingleTask = ({ tasks, id, isShowSingleTask }) => {
       }).format(activeTask[0].date)
     );
     setTask(activeTask[0].title + activeTask[0].text);
-  }, [isShowSingleTask, activeTask]);
+  }, [activeTask]);
 
   useEffect(() => {
     setTask(activeTask[0].title + activeTask[0].text);

@@ -20,7 +20,7 @@
         border-top: 1px ridge #adadad;
     }
     .wrapperTextarea textarea {
-      background-color: #3f3f3f;
-      color: white;
+      background-color: #f0f0f0;
+      color: #303030;
     }
   }

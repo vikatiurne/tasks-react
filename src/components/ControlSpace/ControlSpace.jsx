@@ -1,13 +1,18 @@
 import { FaRegTrashAlt, FaRegEdit } from 'react-icons/fa';
 import Button from '../UI/Button/Button';
 
-const ControlSpace = ({ deleteTask, editTask, disabled, id }) => {
+const ControlSpace = ({
+  deleteTask,
+  editTask,
+
+  id,
+}) => {
   return (
     <>
-      <Button onClick={() => deleteTask(id)} disabled={disabled}>
+      <Button onClick={() => deleteTask(id)}>
         <FaRegTrashAlt />
       </Button>
-      <Button onClick={editTask} disabled={disabled}>
+      <Button onClick={editTask}>
         <FaRegEdit />
       </Button>
     </>

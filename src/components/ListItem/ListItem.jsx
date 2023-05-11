@@ -1,14 +1,24 @@
+import { useContext } from 'react';
 import styles from './ListItem.module.css';
+import TasksContext from '../../context/TasksContext';
 
-const ListItem = ({ task, clickTackHandler }) => {
-  const dateInDB = task?.date;
+const ListItem = ({ task }) => {
+  const { clickTackHandler } = useContext(TasksContext);
+
+  const dateInDB = Date.parse(
+    Intl.DateTimeFormat('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    }).format(task?.date)
+  );
   const currentDay = Intl.DateTimeFormat('en-US', {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
-  }).format(task.date);
+  }).format(Date.now());
   const startDate = Date.parse(currentDay);
-  const deffTime = dateInDB - startDate < 86400000;
+  const deffTime = startDate - dateInDB < 86400000;
 
   const renderTaskInSideBar = (
     <li

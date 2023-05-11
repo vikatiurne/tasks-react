@@ -3,9 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 import './App.css';
 
+import TasksContext from './context/TasksContext';
 import { idb } from './components/indexedDB/idb';
 import createCollectionsInIndexDB from './components/indexedDB/idb';
-
 import NewTask from './components/NewTask/NewTask';
 import ControlSpace from './components/ControlSpace/ControlSpace';
 import SideBar from './components/SideBar/SideBar';
@@ -17,10 +17,10 @@ function App() {
   const [clickedEdit, setClickedEdit] = useState(false);
   const [clickedDelete, setClickedDelete] = useState(false);
   const [clickedSearch, setClickedSearch] = useState(false);
-  const [searchText, setSearchText] = useState('');
   const [disabled, setDisabled] = useState('disabled');
   const [disabledAdd, setDisabledAdd] = useState(null);
   const [isShowSingleTask, setIsShowSingleTask] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [activeTaskId, setActiveTaskId] = useState(null);
 
   useEffect(() => {
@@ -28,17 +28,9 @@ function App() {
     getAllTasks();
   }, []);
 
-  const searchTasks = allTasks.filter((task) => {
-    return (
-      task.text.toLowerCase().includes(searchText.toLowerCase()) ||
-      task.title.toLowerCase().includes(searchText.toLowerCase())
-    );
-  });
-
   const addClickHandler = () => {
     setClickedAdd(true);
     setIsShowSingleTask(false);
-    setDisabledAdd('disabled');
     setDisabled('disabled');
     if (!!activeTaskId) {
       setAllTasks(
@@ -185,7 +177,7 @@ function App() {
 
   const editTaskHandler = (content, id, isFocus) => {
     setDisabled('disabled');
-    setDisabledAdd(null)
+    setDisabledAdd(null);
     let title, text;
     if (content) {
       if (content.includes('.')) {
@@ -225,7 +217,6 @@ function App() {
         updatedTask.onerror = (err) => console.log(err);
       };
     }
-  
   };
 
   const editClickHandler = () => {
@@ -239,13 +230,17 @@ function App() {
     <div className="App">
       <div className="active">
         <div className="control">
-          <NewTask onclick={addClickHandler} disabled={disabledAdd} />
-          <ControlSpace
-            id={activeTaskId}
-            deleteTask={deleteTaskHandler}
-            editTask={editClickHandler}
-            disabled={disabled}
-          />
+          <TasksContext.Provider value={{ disabled: disabledAdd }}>
+            <NewTask addTask={addClickHandler} />
+          </TasksContext.Provider>
+
+          <TasksContext.Provider value={{ disabled: disabled }}>
+            <ControlSpace
+              id={activeTaskId}
+              deleteTask={deleteTaskHandler}
+              editTask={editClickHandler}
+            />
+          </TasksContext.Provider>
         </div>
         <div>
           <input
@@ -259,23 +254,25 @@ function App() {
         </div>
       </div>
       <div className="taskWrapper">
-        <SideBar
-          allTasks={searchTasks}
-          addTask={addTaskHandler}
-          clickedAdd={clickedAdd}
-          clickTackHandler={clickTackHandler}
-        />
+        <TasksContext.Provider value={{ clickTackHandler }}>
+          <SideBar searchText={searchText} allTasks={allTasks} />
+        </TasksContext.Provider>
         {(!clickedDelete || clickedAdd) && (
-          <WorkSpace
-            addTask={addTaskHandler}
-            clickedAdd={clickedAdd}
-            clickedEdit={clickedEdit}
-            clickedSearch={clickedSearch}
-            tasks={allTasks}
-            id={activeTaskId}
-            isShowSingleTask={isShowSingleTask}
-            editTask={editTaskHandler}
-          />
+          <TasksContext.Provider
+            value={{
+              addTask: addTaskHandler,
+              editTask: editTaskHandler,
+              tasks: allTasks,
+              id: activeTaskId,
+            }}
+          >
+            <WorkSpace
+              clickedAdd={clickedAdd}
+              clickedEdit={clickedEdit}
+              clickedSearch={clickedSearch}
+              isShowSingleTask={isShowSingleTask}
+            />
+          </TasksContext.Provider>
         )}
       </div>
     </div>
